@@ -67,3 +67,11 @@ p{
 .letra:hover{
     opacity: .5;
 }
+
+.letra_correcta{
+    background-color: rgb(77, 127, 72);
+}
+
+.letra_incorrecta{
+    background-color: rgb(143, 49, 49);
+}
