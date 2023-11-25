@@ -24,7 +24,7 @@ p{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 10rem;
+    margin-top: 1rem;
 }
 
 .palabra{
@@ -33,13 +33,16 @@ p{
     margin-bottom: 4rem;
 }
 
-.palabra_letra{
+.palabra__letra{
+    text-align: center;
+    font-size: 2rem;
     margin: 0 .5rem;
     color: white;
+    font-weight: bold;
     
 }
 
-.letras{
+.contenedor_letras{
     display: flex;
     flex-wrap: wrap;
     width: 24rem;
@@ -68,10 +71,19 @@ p{
     opacity: .5;
 }
 
-.letra_correcta{
+.letra.correcta{
     background-color: rgb(77, 127, 72);
 }
 
-.letra_incorrecta{
+.letra.incorrecta{
     background-color: rgb(143, 49, 49);
+}
+
+.letra:active{
+    opacity: 1;
+
+}
+
+.letra:disabled{
+    opacity: .5;
 }
