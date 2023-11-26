@@ -5,6 +5,7 @@
     - Hacer que cuando adivine una letra aparezca por pantalla reemplazando el espacio en blanco 
     - Cuando el usuario alcance el maximo de intentos las letras se bloquen para no poder ingresar mas, lo mismo si gana.
     - Cuando termine ya sea que gane o pierda aparezca un boton para reiniciar
+    - Agregar cuenta regresiva, agregarle 10 segundos por cada letra, al intentar adivinar una letra tendra 10 segundos, pasados estos 10 segundos se le restara una oportunidad.
 */
 
 const arrayPalabras =  ["avion", "perro", "gato", "caballo", "edificio"];
@@ -34,9 +35,11 @@ function generarEspaciosPalabraAleatoria(){
     for(let i = 0; i < palabraAleatoriaArray.length; i++){
         palabraVacia += '__ '; 
     }
-    palabra.innerHTML += `<span class="palabra__letra">${palabraVacia}</span>`;
+    
+    palabra.innerHTML = `<span class="palabra__letra">${palabraVacia}</span>`;
 
 }
+
 
 // Actualiza la palabra con las letras acertadas y las muestra por pantalla
 function actualizarPalabra(letra){
@@ -69,48 +72,76 @@ function juegoTerminado(){
 }
 
 function reiniciarJuego(){
+    /*
+        - Oportunidades = 6
+        - Que las letras se puedan presionar de nuevo
+        - Reiniciar las letras sin que haya correcta o incorrecta
+        - Hacer que se esconda de nuevo el boton de reiniciar
+        - Actualizar los intentos en la pantalla
+        - Generar una nueva palabra para adivinar
+    */
+    //    
     oportunidades = 6;
     
-    juego();
-}
-
-function juego(){
-    generarEspaciosPalabraAleatoria(palabraAleatoria);
-    contenedorLetras.addEventListener('click', (e) =>{
-        
-        if(e.target.classList.contains('letra')){
-            if(palabraAleatoriaArray.indexOf(e.target.textContent) !== -1){
-                
-                e.target.className = 'letra correcta';
-                e.target.setAttribute('disabled','disabled');
-    
-                actualizarPalabra(e.target.textContent);
-    
-                // Si la palabra generada es igual a la palabraVacia(Que contiene lo que adivino el usuario) significa que gano
-                if(palabraAleatoria == palabraVacia){
-                    juegoTerminado();
-                    console.log(oportunidades);
-                }
-                console.log();
-    
-            }else{
-                
-                oportunidades--;
-                e.target.className = 'letra incorrecta';
-                e.target.setAttribute('disabled','disabled');
-    
-                actualizarIntentos(oportunidades);
-    
-                if(oportunidades == 0){
-                    juegoTerminado();
-                    console.log(oportunidades);
-                }
-            }
-        }
-    
+    // 
+    letras.forEach((e) => {
+        e.removeAttribute('disabled');
+        e.className = 'letra';
     });
 
-    
+    // 
+    reiniciar.setAttribute('hidden', 'hidden');
+
+    // 
+    actualizarIntentos(oportunidades);
+
+    // 
+    palabraAleatoria = generarPalabraAleatoria(arrayPalabras).toUpperCase();
+    palabraAleatoriaArray = [...palabraAleatoria];
+    arrayVacio = Array(palabraAleatoriaArray.length).fill('__ '); 
+    palabraVacia = '';
+    console.log(palabraAleatoria);
+
+    // 
+    generarEspaciosPalabraAleatoria(palabraAleatoria);
 }
 
-juego();
+// Primera vez que se inicie el juego
+generarEspaciosPalabraAleatoria(palabraAleatoria);
+
+contenedorLetras.addEventListener('click', (e) =>{
+    
+    if(e.target.classList.contains('letra')){
+        if(palabraAleatoriaArray.indexOf(e.target.textContent) !== -1){
+            
+            e.target.className = 'letra correcta';
+            e.target.setAttribute('disabled','disabled');
+
+            actualizarPalabra(e.target.textContent);
+
+            // Si la palabra generada es igual a la palabraVacia(Que contiene lo que adivino el usuario) significa que gano
+            if(palabraAleatoria == palabraVacia){
+                juegoTerminado();
+                console.log(oportunidades);
+            }
+            console.log();
+
+        }else{
+            
+            oportunidades--;
+            e.target.className = 'letra incorrecta';
+            e.target.setAttribute('disabled','disabled');
+
+            actualizarIntentos(oportunidades);
+
+            if(oportunidades == 0){
+                juegoTerminado();
+                console.log(oportunidades);
+            }
+        }
+    }
+
+});
+
+reiniciar.addEventListener('click', reiniciarJuego);
+
