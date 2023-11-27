@@ -88,3 +88,11 @@ p{
 .letra:disabled{
     opacity: .5;
 }
+
+.temporizador{
+    margin-top: 2rem;
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+
+}

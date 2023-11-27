@@ -5,7 +5,7 @@
     - Hacer que cuando adivine una letra aparezca por pantalla reemplazando el espacio en blanco 
     - Cuando el usuario alcance el maximo de intentos las letras se bloquen para no poder ingresar mas, lo mismo si gana.
     - Cuando termine ya sea que gane o pierda aparezca un boton para reiniciar
-    - Agregar cuenta regresiva, agregarle 10 segundos por cada letra, al intentar adivinar una letra tendra 10 segundos, pasados estos 10 segundos se le restara una oportunidad.
+    - Agregar cuenta regresiva, agregarle 10 segundos por cada letra, al intentar adivinar una letra tendra 10 segundos, pasados estos 10 segundos se le restara una oportunidad, si adivina un letra el contador vuelve a 10
 */
 
 const arrayPalabras =  ["avion", "perro", "gato", "caballo", "edificio"];
@@ -23,7 +23,7 @@ const contenedorLetras = document.querySelector('.contenedor_letras');
 const letras = document.querySelectorAll('.letra');
 const intentos = document.querySelector('.intentos');
 const reiniciar = document.querySelector('.reiniciar');
-
+const temporizador = document.querySelector('.temporizador');
 
 function generarPalabraAleatoria(arrayPalabras){
     let numeroAleatorio = Math.floor(Math.random() * arrayPalabras.length);
@@ -71,6 +71,32 @@ function juegoTerminado(){
     
 }
 
+// function actualizarTemporizador(){
+//     let contador = 10;
+//     let cuentaAtras;
+
+//     cuentaAtras = setInterval(() => {
+//         contador--;
+//         temporizador.textContent = `00:00:0${contador}`;
+        
+//         if(contador == 0){
+//             oportunidades--;
+//             actualizarIntentos(oportunidades);
+//             clearInterval(cuentaAtras);
+
+//             if(oportunidades == 0){
+//                 juegoTerminado();
+//             }
+//             actualizarTemporizador();
+//         }
+        
+//     }, 1000);
+    
+
+
+//     console.log(temporizador.textContent);
+// }
+
 function reiniciarJuego(){
     /*
         - Oportunidades = 6
@@ -106,11 +132,12 @@ function reiniciarJuego(){
     generarEspaciosPalabraAleatoria(palabraAleatoria);
 }
 
+
 // Primera vez que se inicie el juego
 generarEspaciosPalabraAleatoria(palabraAleatoria);
 
 contenedorLetras.addEventListener('click', (e) =>{
-    
+
     if(e.target.classList.contains('letra')){
         if(palabraAleatoriaArray.indexOf(e.target.textContent) !== -1){
             
@@ -142,6 +169,8 @@ contenedorLetras.addEventListener('click', (e) =>{
     }
 
 });
+
+
 
 reiniciar.addEventListener('click', reiniciarJuego);
 
