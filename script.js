@@ -30,6 +30,10 @@ const reiniciar = document.querySelector('.reiniciar');
 const cuentaAtras = document.querySelector('.cuentaAtras');
 const errores = document.querySelector('.errores');
 
+const hora = document.querySelector('.hora');
+let cronometro;
+let miFecha = new Date();
+
 function generarPalabraAleatoria(arrayPalabras){
     let numeroAleatorio = Math.floor(Math.random() * arrayPalabras.length);
     return arrayPalabras[numeroAleatorio];
@@ -83,10 +87,59 @@ function juegoTerminado(){
     
 }
 
-// Cronometro
+// ---------------------------------CRONOMETRO--------------------------
+function crono(){
 
+    miFecha.setHours(0, 0, 0, 0);
+    hora.textContent = '00:00:00'
+    
+    let horas = miFecha.getHours();
 
-// Cuenta Atras
+    let minutos = miFecha.getMinutes();
+
+    let segundos = miFecha.getSeconds();
+    console.log(segundos);
+
+    segundos++;
+
+    if(segundos == 60){
+        segundos = 0;
+        minutos += 1;
+
+        miFecha.setMinutes(minutos);
+    }
+
+    miFecha.setSeconds(segundos);
+
+    if(horas < 10){horas = "0" + horas};
+    if(minutos < 10){minutos = "0" + minutos};
+    if(segundos < 10){segundos = "0" + segundos};
+
+    hora.textContent = `${horas}:${minutos}:${segundos}`;
+    
+}
+
+function reiniciarCrono(){
+    //Inicializar cronometro
+    miFecha.setHours(0, 0, 0, 0);
+    
+    //Inicializar texto 
+    hora.textContent = "00:00:00";
+}
+
+function iniciarCrono(){
+    cronometro = setInterval(crono, 1000);
+}
+
+function detenerCrono(){
+    clearInterval(cronometro);
+}
+
+function resetCrono(){
+    setTimeout(reiniciarCrono, 0);
+}
+
+// ---------------------------------CUENTA ATRAS-----------------------
 function actualizarCuentaAtras(tiempoRestante){
     cuentaAtras.textContent = `00:00:0${tiempoRestante}`;
 }
@@ -118,9 +171,6 @@ function resetCuentaAtras(){
     tiempoRestante = 9;
     actualizarCuentaAtras(tiempoRestante);
 }
-
-
-
 
 console.log(cuentaAtras.textContent);
 
@@ -161,13 +211,11 @@ function reiniciarJuego(){
 
 
 // Primera vez que se inicie el juego
+
 generarEspaciosPalabraAleatoria(palabraAleatoria);
-
+// ------------------------JUGAR POR CLICKS---------------------------
 contenedorLetras.addEventListener('click', (e) =>{
-
-    
     if(e.target.classList.contains('letra')){
-
 
         if(palabraAleatoriaArray.indexOf(e.target.textContent) !== -1){
 
@@ -202,7 +250,38 @@ contenedorLetras.addEventListener('click', (e) =>{
 
 });
 
+//--------------------JUGAR POR TECLADO-----------------
+document.addEventListener('keydown', (e) => {
+    
+    letras.forEach((letra) => {
+        if(letra.classList.contains('letra')){
+            if(e.key.toUpperCase() == letra.textContent){
+                if(palabraAleatoriaArray.indexOf(letra.textContent) !== -1){
+                    letra.className = 'letra correcta';
+                    letra.setAttribute('disabled', 'disabled');
+                    actualizarPalabra(e.key.toUpperCase());
+                    
+                    if(palabraAleatoria == palabraVacia){
+                        juegoTerminado();
+                    }
+                    
+                }else{
+                    oportunidades--;
+                    letra.className = 'letra incorrecta';
+                    letra.setAttribute('disabled', 'disabled');
+                    actualizarIntentos(oportunidades);
 
+                    if(oportunidades == 0){
+                        juegoTerminado();
+                    }
+                }
+                console.log(`${e.key} == ${letra.textContent}`);
+            }
+        }else{
+
+        }
+    })
+})
 
 reiniciar.addEventListener('click', reiniciarJuego);
 

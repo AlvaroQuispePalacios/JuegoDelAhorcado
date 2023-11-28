@@ -65,6 +65,7 @@ p{
     border-radius: 5px;
     width: 3rem;
     height: 3rem;
+    cursor: pointer;
 
 }
 
@@ -89,12 +90,18 @@ p{
     opacity: .5;
 }
 
-
-
-.cuentaAtras, .errores{
+.cuentaAtras{
     margin-top: 2rem;
     color: white;
-    font-size: 2rem;
-    font-weight: bold;
+    font-size: 1.5rem;
+}
 
+.errores{
+    color: white;
+    font-size: 1.5rem;
+}
+
+.cronometro{
+    color: #fff;
+    font-size: 2rem;
 }
