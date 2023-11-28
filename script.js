@@ -12,7 +12,11 @@ const arrayPalabras =  ["avion", "perro", "gato", "caballo", "edificio"];
 let palabraAleatoria = generarPalabraAleatoria(arrayPalabras).toUpperCase();
 let palabraAleatoriaArray = [...palabraAleatoria];
 
+let intervalo;
+let tiempoRestante = 10;
 let oportunidades = 6;
+let erroresCometidos = 0;
+
 console.log(palabraAleatoriaArray);
 
 let arrayVacio = Array(palabraAleatoriaArray.length).fill('__ '); 
@@ -23,7 +27,8 @@ const contenedorLetras = document.querySelector('.contenedor_letras');
 const letras = document.querySelectorAll('.letra');
 const intentos = document.querySelector('.intentos');
 const reiniciar = document.querySelector('.reiniciar');
-const temporizador = document.querySelector('.temporizador');
+const cuentaAtras = document.querySelector('.cuentaAtras');
+const errores = document.querySelector('.errores');
 
 function generarPalabraAleatoria(arrayPalabras){
     let numeroAleatorio = Math.floor(Math.random() * arrayPalabras.length);
@@ -57,7 +62,14 @@ function actualizarPalabra(letra){
 
 // Actualizar los intentos por pantalla
 function actualizarIntentos(oportunidades){
-    intentos.textContent = oportunidades;
+    if(oportunidades >= 0){
+        intentos.textContent = oportunidades;
+    }
+}
+
+function actualizarErrores(){
+    erroresCometidos++;
+    errores.textContent = `Has cometido ${erroresCometidos} errores`;
 }
 
 // Una vez se acaba el juego ya sea que ganaste o perdiste desactiva las letras 
@@ -71,31 +83,46 @@ function juegoTerminado(){
     
 }
 
-// function actualizarTemporizador(){
-//     let contador = 10;
-//     let cuentaAtras;
-
-//     cuentaAtras = setInterval(() => {
-//         contador--;
-//         temporizador.textContent = `00:00:0${contador}`;
-        
-//         if(contador == 0){
-//             oportunidades--;
-//             actualizarIntentos(oportunidades);
-//             clearInterval(cuentaAtras);
-
-//             if(oportunidades == 0){
-//                 juegoTerminado();
-//             }
-//             actualizarTemporizador();
-//         }
-        
-//     }, 1000);
-    
+// Cronometro
 
 
-//     console.log(temporizador.textContent);
-// }
+// Cuenta Atras
+function actualizarCuentaAtras(tiempoRestante){
+    cuentaAtras.textContent = `00:00:0${tiempoRestante}`;
+}
+
+function iniciarCuentraAtras(){
+    intervalo = setInterval(() => {
+    tiempoRestante--;
+    actualizarCuentaAtras(tiempoRestante);
+
+        if(tiempoRestante == 0){
+            oportunidades--;
+            actualizarIntentos(oportunidades);
+            resetCuentaAtras();
+            iniciarCuentraAtras();
+
+        }
+
+        if(oportunidades < 0){
+            clearInterval(intervalo);
+            juegoTerminado();
+        }
+
+
+    }, 1000);
+}
+
+function resetCuentaAtras(){
+    clearInterval(intervalo);
+    tiempoRestante = 9;
+    actualizarCuentaAtras(tiempoRestante);
+}
+
+
+
+
+console.log(cuentaAtras.textContent);
 
 function reiniciarJuego(){
     /*
@@ -108,7 +135,7 @@ function reiniciarJuego(){
     */
     //    
     oportunidades = 6;
-    
+    erroresCometidos = 0;
     // 
     letras.forEach((e) => {
         e.removeAttribute('disabled');
@@ -117,10 +144,10 @@ function reiniciarJuego(){
 
     // 
     reiniciar.setAttribute('hidden', 'hidden');
-
+    errores.setAttribute('hidden', 'hidden');
     // 
     actualizarIntentos(oportunidades);
-
+    
     // 
     palabraAleatoria = generarPalabraAleatoria(arrayPalabras).toUpperCase();
     palabraAleatoriaArray = [...palabraAleatoria];
@@ -138,9 +165,12 @@ generarEspaciosPalabraAleatoria(palabraAleatoria);
 
 contenedorLetras.addEventListener('click', (e) =>{
 
+    
     if(e.target.classList.contains('letra')){
+
+
         if(palabraAleatoriaArray.indexOf(e.target.textContent) !== -1){
-            
+
             e.target.className = 'letra correcta';
             e.target.setAttribute('disabled','disabled');
 
@@ -151,16 +181,18 @@ contenedorLetras.addEventListener('click', (e) =>{
                 juegoTerminado();
                 console.log(oportunidades);
             }
-            console.log();
+
 
         }else{
-            
+
             oportunidades--;
             e.target.className = 'letra incorrecta';
             e.target.setAttribute('disabled','disabled');
 
             actualizarIntentos(oportunidades);
-
+            errores.removeAttribute('hidden');
+            actualizarErrores();
+            
             if(oportunidades == 0){
                 juegoTerminado();
                 console.log(oportunidades);
