@@ -1,0 +1,5 @@
+DIARIO:
+- El primer dia 27-11-2023 he hecho el html, y css.
+- El segundo dia 28-11-2023 he hecho el javascript el juego funciona aun todavia no funciona el cronometro
+Intentare 
+- Completar el cronometro y el cuenta atras el siguiente dia.
