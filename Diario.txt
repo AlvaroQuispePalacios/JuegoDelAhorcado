@@ -3,3 +3,6 @@ DIARIO:
 - El segundo dia 28-11-2023 he hecho el javascript el juego funciona aun todavia no funciona el cronometro
 Intentare 
 - Completar el cronometro y el cuenta atras el siguiente dia.
+- 29-11-2023
+    - Terminamos el cronometro y la cuenta atras.
+    - Mañana sera un nuevo dia.

@@ -8,19 +8,32 @@
     - Agregar cuenta regresiva, agregarle 10 segundos por cada letra, al intentar adivinar una letra tendra 10 segundos, pasados estos 10 segundos se le restara una oportunidad, si adivina un letra el contador vuelve a 10
 */
 
+// ----------------------VARIABLES PALABRA ALEATORIA
 const arrayPalabras =  ["avion", "perro", "gato", "caballo", "edificio"];
 let palabraAleatoria = generarPalabraAleatoria(arrayPalabras).toUpperCase();
 let palabraAleatoriaArray = [...palabraAleatoria];
+let arrayVacio = Array(palabraAleatoriaArray.length).fill('__ '); 
+let palabraVacia = '';
 
+//---------------------- VARIABLES CUENTA ATRAS---------------------------
+let contadorIniciarCuentaAtras = 0;
 let intervalo;
 let tiempoRestante = 10;
+
+// ---------------------------VARIABLES CRONOMETRO--------------------------
+
+let contadorIniciarCronometro = 0;
+let cronometro;
+let miFecha = new Date();
+const tiempoTranscurrido = document.querySelector('.tiempoTranscurrido');
+miFecha.setHours(0, 0, 0, 0);
+tiempoTranscurrido.textContent = '00:00:00';
+
 let oportunidades = 6;
 let erroresCometidos = 0;
 
 console.log(palabraAleatoriaArray);
 
-let arrayVacio = Array(palabraAleatoriaArray.length).fill('__ '); 
-let palabraVacia = '';
 
 const palabra = document.querySelector('.palabra');
 const contenedorLetras = document.querySelector('.contenedor_letras');
@@ -30,10 +43,10 @@ const reiniciar = document.querySelector('.reiniciar');
 const cuentaAtras = document.querySelector('.cuentaAtras');
 const errores = document.querySelector('.errores');
 
-const hora = document.querySelector('.hora');
-let cronometro;
-let miFecha = new Date();
 
+// -----------------------FUNCIONES-------------------------------------
+
+// --------------------FUNCIONES PARA PALABRA ALEATORIA------------------
 function generarPalabraAleatoria(arrayPalabras){
     let numeroAleatorio = Math.floor(Math.random() * arrayPalabras.length);
     return arrayPalabras[numeroAleatorio];
@@ -49,7 +62,6 @@ function generarEspaciosPalabraAleatoria(){
 
 }
 
-
 // Actualiza la palabra con las letras acertadas y las muestra por pantalla
 function actualizarPalabra(letra){
     for(let i = 0; i < palabraAleatoriaArray.length; i++){
@@ -64,6 +76,7 @@ function actualizarPalabra(letra){
     }
 }
 
+// ---------------------------------------------------------------
 // Actualizar los intentos por pantalla
 function actualizarIntentos(oportunidades){
     if(oportunidades >= 0){
@@ -76,74 +89,51 @@ function actualizarErrores(){
     errores.textContent = `Has cometido ${erroresCometidos} errores`;
 }
 
-// Una vez se acaba el juego ya sea que ganaste o perdiste desactiva las letras 
-function juegoTerminado(){
-    // recorre los objetos del nodeList 
-    letras.forEach((e) => {
-        e.setAttribute('disabled','disabled');
-    });
-    
-    reiniciar.removeAttribute('hidden');
-    
-}
-
 // ---------------------------------CRONOMETRO--------------------------
+
 function crono(){
-
-    miFecha.setHours(0, 0, 0, 0);
-    hora.textContent = '00:00:00'
-    
-    let horas = miFecha.getHours();
-
-    let minutos = miFecha.getMinutes();
-
     let segundos = miFecha.getSeconds();
-    console.log(segundos);
+    let minutos = miFecha.getMinutes();
+    let horas = miFecha.getHours();
 
     segundos++;
 
     if(segundos == 60){
         segundos = 0;
-        minutos += 1;
+        minutos++;
 
         miFecha.setMinutes(minutos);
     }
-
     miFecha.setSeconds(segundos);
 
     if(horas < 10){horas = "0" + horas};
     if(minutos < 10){minutos = "0" + minutos};
     if(segundos < 10){segundos = "0" + segundos};
 
-    hora.textContent = `${horas}:${minutos}:${segundos}`;
-    
+    tiempoTranscurrido.textContent = `${horas}:${minutos}:${segundos}`;
+
 }
 
-function reiniciarCrono(){
-    //Inicializar cronometro
+function reiniciarCronometro(){
     miFecha.setHours(0, 0, 0, 0);
-    
-    //Inicializar texto 
-    hora.textContent = "00:00:00";
+    tiempoTranscurrido.textContent = '00:00:00';
 }
 
 function iniciarCrono(){
     cronometro = setInterval(crono, 1000);
 }
 
-function detenerCrono(){
+function pararCrono(){
     clearInterval(cronometro);
 }
 
-function resetCrono(){
-    setTimeout(reiniciarCrono, 0);
-}
-
 // ---------------------------------CUENTA ATRAS-----------------------
+// actualiza el contador con la cuenta atras
 function actualizarCuentaAtras(tiempoRestante){
     cuentaAtras.textContent = `00:00:0${tiempoRestante}`;
 }
 
+// 
 function iniciarCuentraAtras(){
     intervalo = setInterval(() => {
     tiempoRestante--;
@@ -172,7 +162,25 @@ function resetCuentaAtras(){
     actualizarCuentaAtras(tiempoRestante);
 }
 
-console.log(cuentaAtras.textContent);
+function pararCuentaAtras(){
+    clearInterval(intervalo);
+}
+
+// Una vez se acaba el juego ya sea que ganaste o perdiste desactiva las letras 
+
+function juegoTerminado(){
+    // recorre los objetos del nodeList 
+    letras.forEach((e) => {
+        e.setAttribute('disabled','disabled');
+    });
+    // Detener el cronometro
+    pararCrono();
+    // Detener cuenta Atras
+    pararCuentaAtras();
+
+    reiniciar.removeAttribute('hidden');
+
+}
 
 function reiniciarJuego(){
     /*
@@ -182,6 +190,7 @@ function reiniciarJuego(){
         - Hacer que se esconda de nuevo el boton de reiniciar
         - Actualizar los intentos en la pantalla
         - Generar una nueva palabra para adivinar
+        - Reiniciar el cronometro a cero
     */
     //    
     oportunidades = 6;
@@ -205,8 +214,16 @@ function reiniciarJuego(){
     palabraVacia = '';
     console.log(palabraAleatoria);
 
-    // 
+    // Genera una nueva palabra
     generarEspaciosPalabraAleatoria(palabraAleatoria);
+
+    // Reinicia el cronometro a 0, el contador para poder iniciar el cronometro en una nueva partida y actualizar el cronometro para que este en 00:00:00
+    reiniciarCronometro();
+    contadorIniciarCronometro = 0;
+
+    // 
+    resetCuentaAtras();
+    contadorIniciarCuentaAtras = 0;
 }
 
 
@@ -215,10 +232,23 @@ function reiniciarJuego(){
 generarEspaciosPalabraAleatoria(palabraAleatoria);
 // ------------------------JUGAR POR CLICKS---------------------------
 contenedorLetras.addEventListener('click', (e) =>{
+    // Comprobar que sea presionado las letras y no el contenedor de estas
     if(e.target.classList.contains('letra')){
+        
+        // Comprobar que el cronometro se inicie solo una vez al presionar una letra
+        if(contadorIniciarCronometro < 1){
+            contadorIniciarCronometro++;
+            iniciarCrono();
+        }
+        
+        if(contadorIniciarCuentaAtras < 1){
+            contadorIniciarCuentaAtras++;
+            iniciarCuentraAtras();
+        }
 
+        // Si en la array de palabras se encuentra alguna letra que el usuario introdujo hace esto
         if(palabraAleatoriaArray.indexOf(e.target.textContent) !== -1){
-
+            console.log(e.target.textContent);
             e.target.className = 'letra correcta';
             e.target.setAttribute('disabled','disabled');
 
@@ -229,7 +259,6 @@ contenedorLetras.addEventListener('click', (e) =>{
                 juegoTerminado();
                 console.log(oportunidades);
             }
-
 
         }else{
 
@@ -251,37 +280,39 @@ contenedorLetras.addEventListener('click', (e) =>{
 });
 
 //--------------------JUGAR POR TECLADO-----------------
-document.addEventListener('keydown', (e) => {
+// document.addEventListener('keydown', (e) => {
     
-    letras.forEach((letra) => {
-        if(letra.classList.contains('letra')){
-            if(e.key.toUpperCase() == letra.textContent){
-                if(palabraAleatoriaArray.indexOf(letra.textContent) !== -1){
-                    letra.className = 'letra correcta';
-                    letra.setAttribute('disabled', 'disabled');
-                    actualizarPalabra(e.key.toUpperCase());
+//     letras.forEach((letra) => {
+//         if(letra.classList.contains('letra')){
+//             if(e.key.toUpperCase() == letra.textContent){
+//                 if(palabraAleatoriaArray.indexOf(letra.textContent) !== -1){
+//                     letra.className = 'letra correcta';
+//                     letra.setAttribute('disabled', 'disabled');
+//                     actualizarPalabra(e.key.toUpperCase());
                     
-                    if(palabraAleatoria == palabraVacia){
-                        juegoTerminado();
-                    }
+//                     if(palabraAleatoria == palabraVacia){
+//                         juegoTerminado();
+//                     }
                     
-                }else{
-                    oportunidades--;
-                    letra.className = 'letra incorrecta';
-                    letra.setAttribute('disabled', 'disabled');
-                    actualizarIntentos(oportunidades);
+//                 }else{
+//                     oportunidades--;
+//                     letra.className = 'letra incorrecta';
+//                     letra.setAttribute('disabled', 'disabled');
+//                     actualizarIntentos(oportunidades);
 
-                    if(oportunidades == 0){
-                        juegoTerminado();
-                    }
-                }
-                console.log(`${e.key} == ${letra.textContent}`);
-            }
-        }else{
+//                     if(oportunidades == 0){
+//                         juegoTerminado();
+//                     }
+//                 }
+//                 console.log(`${e.key} == ${letra.textContent}`);
+//             }
+//         }else{
 
-        }
-    })
-})
+//         }
+//     })
+// })
+
+
 
 reiniciar.addEventListener('click', reiniciarJuego);
 
