@@ -2,7 +2,7 @@ body{
     margin: 0;
     padding: 0;
     background-color: rgba(0, 0, 0, 0.794);
-    font-family: sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 h1{
@@ -104,4 +104,61 @@ p{
 .cronometro{
     color: #fff;
     font-size: 2rem;
+}
+
+/* ----------------------------------------------POPUP-------------------------------------------- */
+.envoltorio-popup{
+    background: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    /* display: none; */
+}
+
+.popup{
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    width: 100%;
+    max-width: 700px;
+    min-height: 400px;
+    margin: 10% auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.842);
+    position: relative;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.popup h2{
+    font-size: 2rem;
+}
+
+.contenido-popup{
+    display: flex;
+    flex-direction: column;
+}
+
+.contenido-popup button{
+    margin: .2rem;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    border: 0;
+    background-color: rgba(63, 69, 128, 0.661);
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 400;
+    border-radius: 5px;
+}
+
+.contenido-popup button:hover{
+    background-color: rgba(63, 69, 128, 0.818);
+}
+.contenido-popup button:active{
+    background-color: rgba(63, 69, 128, 0.962);
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.835);
 }

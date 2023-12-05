@@ -6,3 +6,7 @@ Intentare
 - 29-11-2023
     - Terminamos el cronometro y la cuenta atras.
     - Mañana sera un nuevo dia.
+
+- 05-12-2023
+    - Agregamos algunos json y ya se puede hacer que la palabra sea tomada del json 
+    
