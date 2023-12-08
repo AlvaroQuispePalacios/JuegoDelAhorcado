@@ -7,10 +7,6 @@
     - Cuando termine ya sea que gane o pierda aparezca un boton para reiniciar
     - Agregar cuenta regresiva, agregarle 10 segundos por cada letra, al intentar adivinar una letra tendra 10 segundos, pasados estos 10 segundos se le restara una oportunidad, si adivina un letra el contador vuelve a 10
 */
-
-
-
-
 const obtenerTODOS = (miCallback, source) => {
     const request = new XMLHttpRequest();
     request.addEventListener("readystatechange", () => {
@@ -28,12 +24,32 @@ const obtenerTODOS = (miCallback, source) => {
   request.send();
 };
 
+const envoltorioPopUp = document.querySelector('.envoltorio-popup');
+const categorias = document.querySelectorAll('.categoria');
 
-// callback llama a esta funcion
-obtenerTODOS((error, datos) => {
-  console.log("callback invocado 1");
-  gestionarRespuesta(error, datos);
-}, "/json/animales.json");
+// elegirEntreCategorias();
+
+function elegirEntreCategorias(){
+    categorias.forEach((categoria) => {
+        categoria.addEventListener('click', () => {
+            let categoriaElegida = categoria.getAttribute('categoria');
+            elegirCategoria(categoriaElegida);
+            envoltorioPopUp.style="display:none";
+        })
+    })
+}
+
+
+function elegirCategoria(categoria){
+  // callback llama a esta funcion
+  obtenerTODOS((error, datos) => {
+    console.log("callback invocado 1");
+    gestionarRespuesta(error, datos);
+    jugarAhorcado();
+  }, categoria);
+  
+  
+}
 
 function gestionarRespuesta(error, datos) {
   if (error) {
@@ -47,8 +63,12 @@ function gestionarRespuesta(error, datos) {
     });
     generarEspaciosPalabraAleatoria(palabraAleatoria);
     console.log(palabraAleatoria);
+    
+    // jugarAhorcado();
   }
 }
+
+elegirEntreCategorias();
 
 
 // ----------------------VARIABLES PALABRA ALEATORIA
@@ -125,7 +145,7 @@ function actualizarIntentos(oportunidades) {
 }
 
 function actualizarErrores() {
-  erroresCometidos++;
+  erroresCometidos += 1;
   errores.textContent = `Has cometido ${erroresCometidos} errores`;
 }
 
@@ -136,11 +156,11 @@ function crono() {
   let minutos = miFecha.getMinutes();
   let horas = miFecha.getHours();
 
-  segundos++;
+  segundos += 1;
 
   if (segundos == 60) {
     segundos = 0;
-    minutos++;
+    minutos += 1;
 
     miFecha.setMinutes(minutos);
   }
@@ -181,11 +201,11 @@ function actualizarCuentaAtras(tiempoRestante) {
 //
 function iniciarCuentraAtras() {
   intervalo = setInterval(() => {
-    tiempoRestante--;
+    tiempoRestante -= 1;
     actualizarCuentaAtras(tiempoRestante);
 
     if (tiempoRestante == 0) {
-      oportunidades--;
+      oportunidades -= 1;
       actualizarIntentos(oportunidades);
       resetCuentaAtras();
       iniciarCuentraAtras();
@@ -249,14 +269,14 @@ function reiniciarJuego() {
   actualizarIntentos(oportunidades);
 
   //
-  palabraAleatoria = generarPalabraAleatoria(arrayPalabras).toUpperCase();
-  palabraAleatoriaArray = [...palabraAleatoria];
-  arrayVacio = Array(palabraAleatoriaArray.length).fill("__ ");
+//   palabraAleatoria = generarPalabraAleatoria(arrayPalabras).toUpperCase();
+//   palabraAleatoriaArray = [...palabraAleatoria];
+//   arrayVacio = Array(palabraAleatoriaArray.length).fill("__ ");
   palabraVacia = "";
   console.log(palabraAleatoria);
 
   // Genera una nueva palabra
-  generarEspaciosPalabraAleatoria(palabraAleatoria);
+//   generarEspaciosPalabraAleatoria(palabraAleatoria);
 
   // Reinicia el cronometro a 0, el contador para poder iniciar el cronometro en una nueva partida y actualizar el cronometro para que este en 00:00:00
   reiniciarCronometro();
@@ -265,6 +285,10 @@ function reiniciarJuego() {
   //
   resetCuentaAtras();
   contadorIniciarCuentaAtras = 0;
+
+    //
+    envoltorioPopUp.style = "display:block";
+    elegirEntreCategorias();
 }
 
 // Primera vez que se inicie el juego
@@ -278,12 +302,13 @@ function jugarAhorcado(){
       if (e.target.classList.contains("letra")) {
         // Comprobar que el cronometro se inicie solo una vez al presionar una letra
         if (contadorIniciarCronometro < 1) {
-          contadorIniciarCronometro++;
+          contadorIniciarCronometro += 1;
           iniciarCrono();
         }
+        
         // Al presionar un boton iniciamos la cuenta atras, si se presiona otra letra reinicia el contador para la nueva letra
         if (contadorIniciarCuentaAtras < 1) {
-          contadorIniciarCuentaAtras++;
+          contadorIniciarCuentaAtras += 1;
           iniciarCuentraAtras();
 
         }else {
@@ -321,42 +346,5 @@ function jugarAhorcado(){
       }
     });
 }
-
-
-
-jugarAhorcado();
-
-//--------------------JUGAR POR TECLADO-----------------
-// document.addEventListener('keydown', (e) => {
-
-//     letras.forEach((letra) => {
-//         if(letra.classList.contains('letra')){
-//             if(e.key.toUpperCase() == letra.textContent){
-//                 if(palabraAleatoriaArray.indexOf(letra.textContent) !== -1){
-//                     letra.className = 'letra correcta';
-//                     letra.setAttribute('disabled', 'disabled');
-//                     actualizarPalabra(e.key.toUpperCase());
-
-//                     if(palabraAleatoria == palabraVacia){
-//                         juegoTerminado();
-//                     }
-
-//                 }else{
-//                     oportunidades--;
-//                     letra.className = 'letra incorrecta';
-//                     letra.setAttribute('disabled', 'disabled');
-//                     actualizarIntentos(oportunidades);
-
-//                     if(oportunidades == 0){
-//                         juegoTerminado();
-//                     }
-//                 }
-//                 console.log(`${e.key} == ${letra.textContent}`);
-//             }
-//         }else{
-
-//         }
-//     })
-// })
 
 reiniciar.addEventListener("click", reiniciarJuego);
