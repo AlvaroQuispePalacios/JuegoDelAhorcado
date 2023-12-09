@@ -2,11 +2,17 @@ DIARIO:
 - El primer dia 27-11-2023 he hecho el html, y css.
 - El segundo dia 28-11-2023 he hecho el javascript el juego funciona aun todavia no funciona el cronometro
 Intentare 
-- Completar el cronometro y el cuenta atras el siguiente dia.
+    - Completar el cronometro y el cuenta atras el siguiente dia.
+    - Mañana sera un nuevo dia.
 - 29-11-2023
     - Terminamos el cronometro y la cuenta atras.
     - Mañana sera un nuevo dia.
-
 - 05-12-2023
-    - Agregamos algunos json y ya se puede hacer que la palabra sea tomada del json 
-    
+    - Agregamos algunos json y ya se puede hacer que la palabra sea tomada del json .
+    - Mañana sera un nuevo dia.
+- 08-12-2023
+    - Terminamos que el usuario pueda elegir una categoria y empezamos la tabla de puntuaciones.
+    - Mañana sera un nuevo dia.
+- 09-12-2023
+    -Terminamos la tabla de puntuaciones.
+    - Mañana sera un nuevo dia.

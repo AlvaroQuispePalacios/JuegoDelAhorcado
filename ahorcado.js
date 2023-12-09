@@ -41,7 +41,7 @@ categorias.forEach((categoria) => {
     categoria.addEventListener('click', () => {
         let rutaJsonCategoria = categoria.getAttribute('categoria');
         obtenerTODOS((error, datos) => {
-            console.log("callback invocado 1");
+            // console.log("callback invocado 1");
             gestionarRespuesta(error, datos);
         }, rutaJsonCategoria);
     });
@@ -69,15 +69,15 @@ function generarPalabraAleatoria(arrayPalabras) {
 
 function generarEspaciosPalabraAleatoria(palabraAleatoria) {
     for (let i = 0; i < palabraAleatoria.length; i++) {
-        console.log(palabraAleatoria.charAt(i));
+        // console.log(palabraAleatoria.charAt(i));
         espaciosPalabraAleatoria += "__ ";
     }
-    console.log(espaciosPalabraAleatoria);
+    // console.log(espaciosPalabraAleatoria);
 }
 
 function generarPalabraAleatoriaArray() {
     palabraAleatoriaArray = [...palabraAleatoria];
-    console.log(palabraAleatoriaArray + "palabraAleatoriaArray");
+    // console.log(palabraAleatoriaArray + "palabraAleatoriaArray");
 }
 
 function llenarArrayLetrasUsuario() {
@@ -170,72 +170,106 @@ let intervalo;
 let tiempoRestante = 10;
 function actualizarCuentaAtras(tiempoRestante) {
     cuentaAtras.textContent = `00:00:0${tiempoRestante}`;
-  }
-  
-  function iniciarCuentraAtras() {
+}
+
+function iniciarCuentraAtras() {
     intervalo = setInterval(() => {
-      tiempoRestante -= 1;
-      actualizarCuentaAtras(tiempoRestante);
-  
-      if (tiempoRestante == 0) {
-        oportunidades -= 1;
-        actualizarIntentos(oportunidades);
-        resetCuentaAtras();
-        iniciarCuentraAtras();
-      }
-  
-      if (oportunidades < 0) {
-        clearInterval(intervalo);
-        juegoTerminado();
-      }
+        tiempoRestante -= 1;
+        actualizarCuentaAtras(tiempoRestante);
+
+        if (tiempoRestante == 0) {
+            oportunidades -= 1;
+            actualizarIntentos(oportunidades);
+            resetCuentaAtras();
+            iniciarCuentraAtras();
+        }
+
+        if (oportunidades < 0) {
+            clearInterval(intervalo);
+            juegoTerminado();
+        }
     }, 1000);
-  }
-  
-  function resetCuentaAtras() {
+}
+
+function resetCuentaAtras() {
     clearInterval(intervalo);
     tiempoRestante = 9;
     actualizarCuentaAtras(tiempoRestante);
-  }
-  
-  function pararCuentaAtras() {
+}
+
+function pararCuentaAtras() {
     clearInterval(intervalo);
-  }
-  
+}
+
 // --------------------------------LOCAL STORAGE--------------------------------
+
 const palabraLS = document.querySelector('.palabraLS');
 const numeroErrores = document.querySelector('.numeroErrores');
 const tiempoTotal = document.querySelector('.tiempoTotal');
 
-function leerPuntajes(){
+function leerPuntajes() {
     // Guardamos en el localstorage por primera vez el objeto que contendra las diferente puntuaciones por partida
-    if(localStorage.getItem('estadistica')){
+    ordenarTablaPuntajes();
+    if (localStorage.getItem('estadistica')) {
         let puntajes = JSON.parse(localStorage.getItem('estadistica'));
-        console.log(puntajes);
         palabraLS.innerHTML = "";
         numeroErrores.innerHTML = "";
         tiempoTotal.innerHTML = "";
         puntajes.forEach((puntaje) => {
-            palabraLS.innerHTML +=`<div>${puntaje.palabra}</div>`;
+            palabraLS.innerHTML += `<div>${puntaje.palabra}</div>`;
             numeroErrores.innerHTML += `<div>${puntaje.numeroErrores}</div>`;
             tiempoTotal.innerHTML += `<div>${puntaje.tiempoTotal}</div>`
         })
     }
 }
-
-function guardarPuntajePartida(){
-    if(localStorage.getItem('estadistica')){
+// Ordena la tabla respecto al tiempo total en lo que se demoro en adivinar la palabra si los tiempos son iguales pasara a ordenarlos por errores
+function ordenarTablaPuntajes() {
+    if (localStorage.getItem("estadistica")) {
         let puntajes = JSON.parse(localStorage.getItem('estadistica'));
-        console.log(puntajes);
-        let puntaje = 
+        // let copiaPuntajes = puntajes.slice();
+        // console.log(puntajes);
+
+        puntajes.sort((x, y) => {
+            let tiempoX = new Date(`1970-01-01T${x.tiempoTotal}`);
+            let tiempoY = new Date(`1970-01-01T${y.tiempoTotal}`);
+            if (tiempoX > tiempoY){
+                return 1;
+            }
+            if (tiempoX < tiempoY){
+                return -1;
+            }
+            return y.numeroErrores - x.numeroErrores;
+        });
+        
+        for(let i = 0 ; i < puntajes.length - 1; i++){
+            for(let y = i+1;  y < puntajes.length; y++){
+                if(puntajes[i].palabra == puntajes[y].palabra){
+                    // console.log(puntajes[y]);
+                    puntajes.splice(y,1);
+                }
+            }
+        } 
+        // console.log(puntajes);
+        localStorage.setItem("estadistica", JSON.stringify(puntajes));
+    }
+}
+
+function guardarPuntajePartida() {
+    if (localStorage.getItem('estadistica')) {
+        if(palabraUsuario == palabraAleatoria){
+            let puntajes = JSON.parse(localStorage.getItem('estadistica'));
+            // console.log(puntajes);
+            let puntaje =
             {
                 palabra: palabraAleatoria,
                 numeroErrores: erroresCometidos,
                 tiempoTotal: tiempoTranscurrido.textContent
             };
-        puntajes.push(puntaje);
-        localStorage.setItem("estadistica", JSON.stringify(puntajes));
-    }else{
-        if(palabraUsuario == palabraAleatoria){
+            puntajes.push(puntaje);
+            localStorage.setItem("estadistica", JSON.stringify(puntajes));
+        }
+    } else {
+        if (palabraUsuario == palabraAleatoria) {
             let puntaje = [
                 {
                     palabra: palabraAleatoria,
@@ -245,17 +279,6 @@ function guardarPuntajePartida(){
             ];
             localStorage.setItem("estadistica", JSON.stringify(puntaje));
         }
-    }
-}
-
-function actualizarPuntuaciones(){
-    if(localStorage.getItem('estadistica')){
-        let puntajes = JSON.parse(localStorage.getItem('estadistica'));
-        puntajes.forEach((puntaje) => {
-            palabraLS.innerHTML =`<div>${puntaje.palabra}</div>`;
-            numeroErrores.innerHTML = `<div>${puntaje.numeroErrores}</div>`;
-            tiempoTotal.innerHTML = `<div>${puntaje.tiempoTotal}</div>`
-        })
     }
 }
 
@@ -282,10 +305,10 @@ contenedorletras.addEventListener('click', (e) => {
             iniciarCrono();
         }
 
-        if(contadorIniciarCuentaAtras < 1){
+        if (contadorIniciarCuentaAtras < 1) {
             contadorIniciarCuentaAtras += 1;
             iniciarCuentraAtras();
-        }else {
+        } else {
             resetCuentaAtras();
             iniciarCuentraAtras();
         }
@@ -339,6 +362,8 @@ function reiniciarJuegoAhorcado() {
     // 
     resetCuentaAtras();
     contadorIniciarCuentaAtras = 0;
+    // 
+
     // 
     envoltorioPopUp.style = "display:block";
 }

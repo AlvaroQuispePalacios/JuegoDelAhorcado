@@ -114,6 +114,7 @@ p{
     left: 0;
     height: 100%;
     width: 100%;
+    z-index: 20;
     /* display: none; */
 }
 
@@ -127,6 +128,7 @@ p{
     padding: 20px;
     background: rgba(255, 255, 255, 0.842);
     position: relative;
+    
     border-radius: 5px;
     display: flex;
     justify-content: center;
@@ -164,17 +166,17 @@ p{
 }
 
 .tablaPuntuaciones{
+    z-index: 10;
     position: absolute;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: 60px repeat(1, 1fr);
     top: 10rem;
-    left: 5rem;
+    left: 1.5rem;
     color: #fff;
     background-color: rgb(41, 45, 82);
     border-radius: 5px;
     text-align: center;
-    opacity: .7;
     max-width: 500px;
     
 }
