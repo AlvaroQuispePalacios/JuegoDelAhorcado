@@ -202,25 +202,61 @@ function actualizarCuentaAtras(tiempoRestante) {
   }
   
 // --------------------------------LOCAL STORAGE--------------------------------
+const palabraLS = document.querySelector('.palabraLS');
+const numeroErrores = document.querySelector('.numeroErrores');
+const tiempoTotal = document.querySelector('.tiempoTotal');
+
 function leerPuntajes(){
     // Guardamos en el localstorage por primera vez el objeto que contendra las diferente puntuaciones por partida
     if(localStorage.getItem('estadistica')){
         let puntajes = JSON.parse(localStorage.getItem('estadistica'));
         console.log(puntajes);
-    }else{
-        let puntaje = [{}];
+        palabraLS.innerHTML = "";
+        numeroErrores.innerHTML = "";
+        tiempoTotal.innerHTML = "";
+        puntajes.forEach((puntaje) => {
+            palabraLS.innerHTML +=`<div>${puntaje.palabra}</div>`;
+            numeroErrores.innerHTML += `<div>${puntaje.numeroErrores}</div>`;
+            tiempoTotal.innerHTML += `<div>${puntaje.tiempoTotal}</div>`
+        })
     }
 }
 
 function guardarPuntajePartida(){
-    let puntaje = [
-        {
-            palabra: palabraAleatoria,
-            numeroErrores: erroresCometidos,
-            tiempoTotal: tiempoTranscurrido.textContent
+    if(localStorage.getItem('estadistica')){
+        let puntajes = JSON.parse(localStorage.getItem('estadistica'));
+        console.log(puntajes);
+        let puntaje = 
+            {
+                palabra: palabraAleatoria,
+                numeroErrores: erroresCometidos,
+                tiempoTotal: tiempoTranscurrido.textContent
+            };
+        puntajes.push(puntaje);
+        localStorage.setItem("estadistica", JSON.stringify(puntajes));
+    }else{
+        if(palabraUsuario == palabraAleatoria){
+            let puntaje = [
+                {
+                    palabra: palabraAleatoria,
+                    numeroErrores: erroresCometidos,
+                    tiempoTotal: tiempoTranscurrido.textContent
+                }
+            ];
+            localStorage.setItem("estadistica", JSON.stringify(puntaje));
         }
-    ];
-    localStorage.setItem("estadistica", JSON.stringify(puntaje));
+    }
+}
+
+function actualizarPuntuaciones(){
+    if(localStorage.getItem('estadistica')){
+        let puntajes = JSON.parse(localStorage.getItem('estadistica'));
+        puntajes.forEach((puntaje) => {
+            palabraLS.innerHTML =`<div>${puntaje.palabra}</div>`;
+            numeroErrores.innerHTML = `<div>${puntaje.numeroErrores}</div>`;
+            tiempoTotal.innerHTML = `<div>${puntaje.tiempoTotal}</div>`
+        })
+    }
 }
 
 // ------------------------------JUEGO TERMINADO--------------------------------
@@ -233,6 +269,7 @@ function juegoTerminado() {
     // Detener cuenta Atras
     pararCuentaAtras();
     // 
+    guardarPuntajePartida();
     leerPuntajes();
     reiniciar.removeAttribute('hidden');
 }
@@ -309,3 +346,5 @@ function reiniciarJuegoAhorcado() {
 reiniciar.addEventListener('click', () => {
     reiniciarJuegoAhorcado();
 });
+
+window.addEventListener('reload', leerPuntajes());

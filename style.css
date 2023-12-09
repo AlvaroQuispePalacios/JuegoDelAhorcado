@@ -162,3 +162,55 @@ p{
     background-color: rgba(63, 69, 128, 0.962);
     box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.835);
 }
+
+.tablaPuntuaciones{
+    position: absolute;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 60px repeat(1, 1fr);
+    top: 10rem;
+    left: 5rem;
+    color: #fff;
+    background-color: rgb(41, 45, 82);
+    border-radius: 5px;
+    text-align: center;
+    opacity: .7;
+    max-width: 500px;
+    
+}
+
+.tituloTablaPuntuaciones{
+    max-height: 2rem;
+    grid-column: span 3; /* Ocupa tres columnas */
+    margin-bottom: 0;
+}
+
+h3{
+    margin: 0;
+}
+
+.palabraLS, .numeroErrores, .tiempoTotal{
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.palabraLS div{
+    padding: .2rem 1rem;
+}
+.numeroErrores div{
+    padding: .2rem 1rem;
+}
+.tiempoTotal div{
+    padding: .2rem 1rem;
+}
+.puntuaciones{
+    color: white;
+}
+caption{
+    border-radius: 5px;
+    background-color: rgb(41, 45, 82);
+}
+th,td,tr{
+    padding: .2rem;
+}
